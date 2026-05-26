@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1.7
+# ---------------------------------------------------------------------
+# Dockerfile de DESARROLLO — corre Vite con HMR dentro del contenedor.
+# Pensado para usarse junto a docker-compose (perfil "dev").
+# ---------------------------------------------------------------------
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instalamos antes para cachear capa de dependencias.
+COPY package.json package-lock.json* ./
+RUN npm ci --no-audit --no-fund
+
+# El código se monta como volumen en compose (bind mount), así que el
+# COPY aquí solo sirve si se construye sin compose.
+COPY . .
+
+ENV HOST=0.0.0.0
+ENV CHOKIDAR_USEPOLLING=true
+
+EXPOSE 5173
+
+# --host expone Vite a la red del contenedor (no solo a 127.0.0.1).
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------
+# docker-compose para el portafolio.
+#
+# Dos perfiles:
+#   - prod  : build con Nginx en puerto 8080 (default)
+#   - dev   : Vite con hot reload en puerto 5173
+#
+# Uso:
+#   docker compose up --build              -> levanta el servicio prod
+#   docker compose --profile dev up        -> levanta el servicio dev
+#   docker compose down                    -> apaga todo
+#   docker compose build --no-cache web    -> rebuild limpio de prod
+# ---------------------------------------------------------------------
+
+services:
+  # ---------------- Producción (imagen pequeña con Nginx) ----------------
+  web:
+    container_name: portafolio-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 20-alpine
+        NGINX_VERSION: 1.27-alpine
+    image: joseph-portafolio:latest
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      TZ: America/Lima
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - portafolio-net
+    labels:
+      com.joseph.project: "portafolio"
+      com.joseph.env: "production"
+
+  # ---------------- Desarrollo (Vite con HMR) ----------------
+  dev:
+    container_name: portafolio-dev
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: joseph-portafolio:dev
+    ports:
+      - "5173:5173"
+    volumes:
+      # Bind mount del código fuente para que los cambios se reflejen al instante.
+      - .:/app
+      # Volumen anónimo para que node_modules del contenedor no pise el del host.
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      TZ: America/Lima
+    stdin_open: true
+    tty: true
+    networks:
+      - portafolio-net
+    labels:
+      com.joseph.project: "portafolio"
+      com.joseph.env: "development"
+
+networks:
+  portafolio-net:
+    driver: bridge

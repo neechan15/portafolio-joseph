@@ -1,0 +1,58 @@
+# Archivos y carpetas que NO deben copiarse al contexto de Docker.
+# Mantener este archivo al día acelera muchísimo los builds.
+
+# Dependencias y artefactos de build
+node_modules
+dist
+build
+.cache
+.parcel-cache
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Variables de entorno locales (¡no incluirlas en la imagen!)
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Control de versiones e historial
+.git
+.gitignore
+.gitattributes
+.github
+
+# Editor / IDE
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Tests / cobertura
+coverage
+.nyc_output
+*.test.*
+__snapshots__
+
+# Configuración del propio Docker (no necesaria dentro de la imagen)
+Dockerfile
+Dockerfile.dev
+docker-compose.yml
+.dockerignore
+
+# Documentación de diseño (markdown grande no necesario en runtime)
+desing1.md
+desing2.md
+desing3.md
+README.md
+
+# Buildinfo de TypeScript
+*.tsbuildinfo
