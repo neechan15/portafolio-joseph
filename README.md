@@ -62,6 +62,24 @@ portafolio/
 
 ## Cómo correr el proyecto
 
+### Opción 0 — La más fácil (recomendada para evaluar)
+
+**Windows**: doble click en `start.bat`
+**Mac / Linux**: `./start.sh` en la terminal
+
+El script:
+1. Verifica que Docker Desktop esté corriendo
+2. Construye la imagen (la primera vez tarda ~1 min)
+3. Levanta el contenedor en segundo plano
+4. Espera a que Nginx responda
+5. **Abre el portafolio automáticamente en el navegador**
+
+Para detenerlo después: `docker compose down`
+
+### Desde Docker Desktop
+
+Una vez levantado el contenedor (con `start.bat` o `docker compose up -d`), Docker Desktop lo muestra en la pestaña **Containers**. En la columna *Port(s)* aparece **`8080:80`** como link — haz click en `8080` y se abre el portafolio en el navegador.
+
 ### Opción A — Local con Node
 
 ```bash
